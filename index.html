@@ -1,0 +1,1497 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cook Medical — Multi-Market Workforce Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────────────────── */
+    :root {
+      --bg:       #f4f6f9;
+      --surface:  #ffffff;
+      --header-bg:#0d1f35;
+      --text:     #0d1f35;
+      --muted:    #5a6a7e;
+      --line:     #e3e8ef;
+      --radius:   14px;
+      --shadow:   0 2px 12px rgba(13,31,53,.07);
+
+      --bloom:    #1F5C99;
+      --bloom-lt: #e8f0fa;
+      --bloom-mid:#3a7fc1;
+      --ws:       #2E7D32;
+      --ws-lt:    #e6f4e7;
+      --ws-mid:   #4caf50;
+      --peoria:   #B5451B;
+      --peoria-lt:#fdf0eb;
+      --peoria-mid:#e06030;
+
+      --alert:    #92400e;
+      --alert-bg: #fffbeb;
+      --alert-bd: #fcd34d;
+
+      --good-txt: #14532d;
+      --good-bg:  #f0fdf4;
+      --good-bd:  #86efac;
+      --warn-txt: #92400e;
+      --warn-bg:  #fffbeb;
+      --warn-bd:  #fcd34d;
+      --bad-txt:  #7f1d1d;
+      --bad-bg:   #fef2f2;
+      --bad-bd:   #fca5a5;
+    }
+
+    /* ── RESET & BASE ────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    a { color: var(--bloom); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── HEADER ──────────────────────────────────────────────────────────── */
+    .site-header {
+      background: var(--header-bg);
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0 10px;
+      flex-wrap: wrap;
+    }
+    .logo-block { display: flex; align-items: center; gap: 12px; }
+    .logo-mark {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #3a7fc1 0%, #1F5C99 100%);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 16px; color: #fff; font-weight: 400;
+      flex-shrink: 0;
+    }
+    .logo-text { line-height: 1.2; }
+    .logo-text .org { font-size: 11px; color: rgba(255,255,255,.5); letter-spacing: .6px; text-transform: uppercase; }
+    .logo-text .title { font-family: 'DM Serif Display', serif; font-size: 17px; color: #fff; }
+    .header-meta { font-size: 11.5px; color: rgba(255,255,255,.45); text-align: right; line-height: 1.5; }
+
+    /* market tab nav */
+    .market-nav {
+      display: flex;
+      gap: 2px;
+      padding-bottom: 0;
+      border-top: 1px solid rgba(255,255,255,.08);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .market-nav::-webkit-scrollbar { display: none; }
+    .mnav-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: rgba(255,255,255,.55);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color .15s, border-color .15s;
+    }
+    .mnav-btn:hover { color: rgba(255,255,255,.85); }
+    .mnav-btn.active { color: #fff; border-bottom-color: #fff; }
+    .mnav-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── ALERT BANNER ────────────────────────────────────────────────────── */
+    .alert-banner {
+      background: var(--alert-bg);
+      border-bottom: 2px solid var(--alert-bd);
+      padding: 10px 24px;
+    }
+    .alert-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .alert-icon {
+      width: 28px; height: 28px;
+      background: #fcd34d;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .alert-text { font-size: 13px; color: var(--alert); flex: 1; }
+    .alert-text strong { color: #78350f; }
+    .alert-cta {
+      font-size: 12px;
+      color: var(--alert);
+      border: 1px solid var(--alert-bd);
+      background: #fff;
+      padding: 5px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .alert-cta:hover { background: #fef3c7; }
+
+    /* ── LAYOUT ──────────────────────────────────────────────────────────── */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    main { padding: 28px 0 60px; }
+
+    .section { margin-bottom: 28px; }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    p { color: var(--muted); font-size: 13.5px; line-height: 1.6; }
+
+    /* ── CARD ────────────────────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 17px;
+      font-weight: 400;
+      margin-bottom: 4px;
+    }
+    .card-sub { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+    .divider { height: 1px; background: var(--line); margin: 14px 0; }
+
+    /* ── MARKET PANEL GRID ───────────────────────────────────────────────── */
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    /* ── MARKET SNAPSHOT CARD ───────────────────────────────────────────── */
+    .mcard {
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .mcard-header {
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .mcard-accent { width: 36px; height: 4px; border-radius: 2px; margin-bottom: 10px; }
+    .mcard-market { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .mcard-name { font-family: 'DM Serif Display', serif; font-size: 19px; margin: 2px 0 2px; }
+    .mcard-msa { font-size: 11.5px; color: var(--muted); }
+
+    /* verdict pill */
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-top: 10px;
+    }
+
+    /* KPI rows inside market card */
+    .mcard-body { padding: 14px 18px; flex: 1; }
+    .kpi-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--line);
+      gap: 8px;
+    }
+    .kpi-row:last-child { border-bottom: none; }
+    .kpi-label { font-size: 12px; color: var(--muted); flex: 1; }
+    .kpi-val {
+      font-size: 14px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .kpi-badge {
+      font-size: 10.5px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .good  { color: var(--good-txt); background: var(--good-bg); border: 1px solid var(--good-bd); }
+    .warn  { color: var(--warn-txt); background: var(--warn-bg); border: 1px solid var(--warn-bd); }
+    .bad   { color: var(--bad-txt);  background: var(--bad-bg);  border: 1px solid var(--bad-bd);  }
+
+    .mcard-footer {
+      padding: 12px 18px;
+      background: var(--bg);
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mcard-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--bloom);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .mcard-link:hover { text-decoration: underline; }
+
+    /* ── SCORECARD MATRIX ────────────────────────────────────────────────── */
+    .scorecard-wrap { overflow-x: auto; }
+    .scorecard {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .scorecard thead tr th {
+      padding: 11px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--bg);
+      border-bottom: 2px solid var(--line);
+      white-space: nowrap;
+    }
+    .scorecard thead tr th:not(:first-child) { text-align: center; }
+    .sc-market-th {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .sc-market-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .sc-market-label { font-size: 12px; font-weight: 700; letter-spacing: .4px; }
+    .sc-market-sub { font-size: 10.5px; font-weight: 400; color: var(--muted); }
+
+    .scorecard tbody tr { border-bottom: 1px solid var(--line); }
+    .scorecard tbody tr:hover { background: #f8fafc; }
+    .scorecard tbody td { padding: 10px 14px; vertical-align: middle; }
+    .scorecard tbody td:first-child {
+      font-size: 12.5px;
+      color: var(--text);
+      font-weight: 500;
+      width: 220px;
+    }
+    .scorecard tbody td:not(:first-child) { text-align: center; }
+
+    .sc-cell {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .sc-val {
+      font-size: 14px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .sc-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 12px;
+    }
+
+    /* ── EMBED SECTION ───────────────────────────────────────────────────── */
+    .embed-wrap {
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .embed-ratio {
+      position: relative;
+      width: 100%;
+      padding-top: 58%;
+      background: linear-gradient(135deg, #f0f4fa 0%, #e8eef6 100%);
+    }
+    .embed-ratio iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .embed-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--muted);
+    }
+    .embed-placeholder-icon {
+      width: 56px; height: 56px;
+      background: #e3e8ef;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+    }
+    .embed-placeholder h3 { font-size: 16px; color: var(--text); text-align: center; }
+    .embed-placeholder p { font-size: 13px; text-align: center; max-width: 340px; }
+    .embed-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--bg);
+      border-top: 1px solid var(--line);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .embed-label { font-size: 12px; color: var(--muted); }
+    .embed-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color .15s, background .15s;
+    }
+    .btn:hover { border-color: #93c5fd; background: #eff6ff; text-decoration: none; }
+    .btn-primary {
+      background: var(--bloom);
+      color: #fff;
+      border-color: var(--bloom);
+    }
+    .btn-primary:hover { background: var(--bloom-mid); border-color: var(--bloom-mid); }
+
+    /* ── FINDINGS GRID ───────────────────────────────────────────────────── */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .finding-card {
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .finding-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .finding-card h3 { font-size: 14px; margin-bottom: 6px; }
+    .finding-card p { font-size: 13px; line-height: 1.55; }
+    .finding-card ul { margin: 8px 0 0 18px; }
+    .finding-card li { font-size: 13px; color: var(--muted); margin-bottom: 5px; line-height: 1.5; }
+    .finding-card li strong { color: var(--text); }
+
+    /* ── COMPETITOR STRIP ────────────────────────────────────────────────── */
+    .competitor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .comp-card {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      padding: 16px;
+    }
+    .comp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .comp-name { font-size: 13px; font-weight: 700; }
+    .comp-sector { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .comp-rows { display: flex; flex-direction: column; gap: 6px; }
+    .comp-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .comp-row:last-child { border-bottom: none; }
+    .comp-market { color: var(--muted); }
+    .comp-status { font-weight: 600; }
+
+    /* ── MARKET DEEP-DIVES ───────────────────────────────────────────────── */
+    .market-section {
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .ms-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .ms-accent-bar {
+      height: 3px;
+      border-radius: 2px;
+      width: 40px;
+      margin-bottom: 8px;
+    }
+    .ms-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+    }
+    .ms-col {
+      padding: 16px 20px;
+      border-right: 1px solid var(--line);
+    }
+    .ms-col:last-child { border-right: none; }
+    .ms-col-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    .ms-stat { margin-bottom: 8px; }
+    .ms-stat-label { font-size: 11.5px; color: var(--muted); }
+    .ms-stat-val { font-size: 15px; font-weight: 700; }
+
+    /* ── RECS GRID ───────────────────────────────────────────────────────── */
+    .recs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .rec-card {
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .rec-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 32px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .rec-market-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .rec-card h3 { font-size: 14px; margin-bottom: 6px; }
+    .rec-card p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── MARKET LINKS ROW ────────────────────────────────────────────────── */
+    .market-links {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .mlink-card {
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: var(--shadow);
+      transition: box-shadow .15s;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .mlink-card:hover { box-shadow: 0 4px 20px rgba(13,31,53,.12); text-decoration: none; }
+    .mlink-flag {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+    }
+    .mlink-market { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); }
+    .mlink-title { font-family: 'DM Serif Display', serif; font-size: 17px; }
+    .mlink-desc { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+    .mlink-arrow { font-size: 13px; color: var(--muted); margin-top: auto; }
+
+    /* ── FOOTER ──────────────────────────────────────────────────────────── */
+    footer {
+      background: var(--header-bg);
+      color: rgba(255,255,255,.55);
+      padding: 28px 0 36px;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 24px;
+    }
+    footer h4 { font-size: 12px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: rgba(255,255,255,.8); margin-bottom: 12px; }
+    footer ol, footer ul { padding-left: 16px; }
+    footer li { font-size: 12px; margin-bottom: 6px; line-height: 1.5; }
+    footer a { color: rgba(255,255,255,.55); }
+    footer a:hover { color: #fff; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.1);
+      padding-top: 18px;
+      font-size: 11.5px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* ── UTILITY ─────────────────────────────────────────────────────────── */
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .tag {
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--muted);
+    }
+
+    .callout {
+      border-radius: 12px;
+      padding: 14px 16px;
+      border-left: 4px solid;
+      margin: 10px 0;
+    }
+    .callout p { font-size: 13.5px; }
+    .callout.info { border-color: var(--bloom); background: var(--bloom-lt); }
+    .callout.info p { color: #1e3a5f; }
+
+    /* page-level filter state */
+    .market-section[data-market].hidden,
+    .mcard[data-market].hidden { display: none; }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeSlide .3s ease both; }
+
+    @media (max-width: 900px) {
+      .market-grid, .recs-grid, .market-links, .competitor-grid, .findings-grid { grid-template-columns: 1fr; }
+      .ms-body { grid-template-columns: 1fr; }
+      .ms-col { border-right: none; border-bottom: 1px solid var(--line); }
+      .ms-col:last-child { border-bottom: none; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .scorecard thead tr th:nth-child(n+3) { display: none; }
+      .scorecard tbody td:nth-child(n+3) { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── SITE HEADER ────────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="logo-block">
+        <div class="logo-mark">C</div>
+        <div class="logo-text">
+          <div class="org">Cook Medical</div>
+          <div class="title">Multi-Market Workforce Intelligence</div>
+        </div>
+      </div>
+      <div class="header-meta">
+        Bloomington IN · Winston-Salem NC · Peoria/Canton IL<br/>
+        Prepared for Stephanie L. &nbsp;·&nbsp; April 2026
+      </div>
+    </div>
+
+    <nav class="market-nav" aria-label="Market filter">
+      <button class="mnav-btn active" data-filter="all">
+        All Markets
+      </button>
+      <button class="mnav-btn" data-filter="bloom" style="--dot:var(--bloom)">
+        <span class="mnav-dot" style="background:var(--bloom)"></span>
+        Bloomington, IN
+      </button>
+      <button class="mnav-btn" data-filter="ws" style="--dot:var(--ws)">
+        <span class="mnav-dot" style="background:var(--ws)"></span>
+        Winston-Salem, NC
+      </button>
+      <button class="mnav-btn" data-filter="peoria" style="--dot:var(--peoria)">
+        <span class="mnav-dot" style="background:var(--peoria)"></span>
+        Peoria / Canton, IL
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- ── ALERT BANNER ───────────────────────────────────────────────────────── -->
+<div class="alert-banner">
+  <div class="alert-inner">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-text">
+      <strong>Recruitment Window — Bloomington, IN:</strong> Novo Nordisk is cutting ~400 jobs at its Bloomington facility effective May 2026. Skilled biomanufacturing workers will enter the local market imminently. Targeted outreach is recommended before competing employers act.
+    </div>
+    <button class="alert-cta" onclick="document.getElementById('competition').scrollIntoView({behavior:'smooth'})">
+      View Competitor Intelligence →
+    </button>
+  </div>
+</div>
+
+<!-- ── MAIN ───────────────────────────────────────────────────────────────── -->
+<main>
+<div class="wrap">
+
+  <!-- SECTION: intro -->
+  <div class="section">
+    <div class="section-label">Overview</div>
+    <h2>Three Markets. One Intelligence System.</h2>
+    <p style="max-width:680px; margin-top:6px;">
+      This page consolidates Cook Medical's labor market analysis across Bloomington IN, Winston-Salem NC, and Peoria/Canton IL into a single comparative view — surfacing where markets differ, why they differ, and what to do about it. Use the market selector above to focus any section.
+    </p>
+    <div class="tag-row">
+      <span class="tag">OEWS wages: May 2024</span>
+      <span class="tag">Unemployment: Oct 2024–Sep 2025</span>
+      <span class="tag">Housing: ACS 2020–2024</span>
+      <span class="tag">Postings snapshot: Feb–Apr 2026</span>
+      <span class="tag">Demographics: ACS 2024 1-Year</span>
+    </div>
+  </div>
+
+  <!-- SECTION: market snapshots -->
+  <div class="section">
+    <div class="section-label">Market Snapshots</div>
+    <div class="market-grid">
+
+      <!-- Bloomington -->
+      <div class="mcard fade-in" data-market="bloom">
+        <div class="mcard-header">
+          <div class="mcard-accent" style="background:var(--bloom)"></div>
+          <div class="mcard-market" style="color:var(--bloom)">Bloomington · Monroe + Owen Co.</div>
+          <div class="mcard-name">Bloomington, IN</div>
+          <div class="mcard-msa">Bloomington MSA · Cook sites: Bloomington, Ellettsville, Spencer</div>
+          <span class="verdict warn">⚡ Scarcity-Driven Market</span>
+        </div>
+        <div class="mcard-body">
+          <div class="kpi-row">
+            <span class="kpi-label">Unemployment (12-mo avg)</span>
+            <span class="kpi-val">3.56% <span class="kpi-badge good">Tight</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Production workforce</span>
+            <span class="kpi-val">7,020</span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Assembler median wage</span>
+            <span class="kpi-val">$17.69/hr</span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Assembler LQ</span>
+            <span class="kpi-val">3.97 <span class="kpi-badge warn">Concentrated</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Rent gap (30% rule)</span>
+            <span class="kpi-val" style="color:var(--warn-txt)">-$1.66/hr <span class="kpi-badge warn">Tight</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Mortgage gap (30% rule)</span>
+            <span class="kpi-val" style="color:var(--bad-txt)">-$8.31/hr <span class="kpi-badge bad">Critical</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Population trend (2015–2024)</span>
+            <span class="kpi-val">+0.4% <span class="kpi-badge warn">Flat</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Median age / Mobility rate</span>
+            <span class="kpi-val">32.6 · 21.8%</span>
+          </div>
+        </div>
+        <div class="mcard-footer">
+          <a class="mcard-link" href="[BLOOMINGTON_REPORT_URL]" target="_blank">
+            Full market report →
+          </a>
+          <span class="kpi-badge bad">Novo layoffs — recruit now</span>
+        </div>
+      </div>
+
+      <!-- Winston-Salem -->
+      <div class="mcard fade-in" data-market="ws" style="animation-delay:.07s">
+        <div class="mcard-header">
+          <div class="mcard-accent" style="background:var(--ws)"></div>
+          <div class="mcard-market" style="color:var(--ws)">Winston-Salem · Forsyth Co. + 4</div>
+          <div class="mcard-name">Winston-Salem, NC</div>
+          <div class="mcard-msa">Winston-Salem MSA · Cook site: Winston-Salem</div>
+          <span class="verdict good">📈 Competition-Driven Market</span>
+        </div>
+        <div class="mcard-body">
+          <div class="kpi-row">
+            <span class="kpi-label">Unemployment (12-mo avg)</span>
+            <span class="kpi-val">3.69% <span class="kpi-badge good">Tight</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Production workforce</span>
+            <span class="kpi-val">22,950</span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Assembler median wage</span>
+            <span class="kpi-val">$19.08/hr</span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Assembler LQ</span>
+            <span class="kpi-val">1.50 <span class="kpi-badge good">Moderate</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Rent gap (30% rule)</span>
+            <span class="kpi-val" style="color:var(--warn-txt)">-$0.82/hr <span class="kpi-badge warn">Borderline</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Mortgage gap (30% rule)</span>
+            <span class="kpi-val" style="color:var(--bad-txt)">-$7.98/hr <span class="kpi-badge bad">Critical</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Population trend (2015–2024)</span>
+            <span class="kpi-val">+7.4% <span class="kpi-badge good">Growing</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Median age / Mobility rate</span>
+            <span class="kpi-val">41.1 · 11.3%</span>
+          </div>
+        </div>
+        <div class="mcard-footer">
+          <a class="mcard-link" href="[WINSTON_REPORT_URL]" target="_blank">
+            Full market report →
+          </a>
+          <span class="kpi-badge good">Largest labor pool</span>
+        </div>
+      </div>
+
+      <!-- Peoria -->
+      <div class="mcard fade-in" data-market="peoria" style="animation-delay:.14s">
+        <div class="mcard-header">
+          <div class="mcard-accent" style="background:var(--peoria)"></div>
+          <div class="mcard-market" style="color:var(--peoria)">Peoria MSA · Fulton Co. + area</div>
+          <div class="mcard-name">Canton, IL</div>
+          <div class="mcard-msa">Peoria MSA · Cook site: Canton</div>
+          <span class="verdict warn">📉 Contraction-Risk Market</span>
+        </div>
+        <div class="mcard-body">
+          <div class="kpi-row">
+            <span class="kpi-label">Unemployment (12-mo avg)</span>
+            <span class="kpi-val">4.48% <span class="kpi-badge warn">Moderate</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Production workforce</span>
+            <span class="kpi-val">14,810</span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Assembler median wage</span>
+            <span class="kpi-val">$22.43/hr</span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Assembler LQ</span>
+            <span class="kpi-val">1.92 <span class="kpi-badge good">Strong</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Rent gap (30% rule)</span>
+            <span class="kpi-val" style="color:var(--good-txt)">+$8.84/hr <span class="kpi-badge good">Affordable</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Mortgage gap (30% rule)</span>
+            <span class="kpi-val" style="color:var(--good-txt)">+$0.80/hr <span class="kpi-badge good">Breakeven</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Population trend (2015–2024)</span>
+            <span class="kpi-val" style="color:var(--bad-txt)">-11.5% <span class="kpi-badge bad">Declining</span></span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Median age / Mobility rate</span>
+            <span class="kpi-val">40.7 · 9.7%</span>
+          </div>
+        </div>
+        <div class="mcard-footer">
+          <a class="mcard-link" href="[CANTON_REPORT_URL]" target="_blank">
+            Full market report →
+          </a>
+          <span class="kpi-badge good">Only market: positive mortgage gap</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Power BI embed -->
+  <div class="section" id="dashboard">
+    <div class="section-label">Analytical Dashboard</div>
+    <div class="card">
+      <div class="card-title">Workforce Intelligence Dashboard</div>
+      <p class="card-sub">
+        Five-page Master Power BI report: Market Scorecard · Labor Supply &amp; Demographics · Wage &amp; Demand · Housing Affordability · Competitive Intelligence. Use market and occupation slicers to drill into each view.
+      </p>
+
+      <div class="embed-wrap">
+        <div class="embed-ratio">
+          <!-- REPLACE src WITH MASTER POWER BI EMBED LINK WHEN PUBLISHED -->
+          <!-- <iframe id="pbiFrame" title="cook_workforce_master" src="[MASTER_POWERBI_EMBED_URL]" frameborder="0" allow="fullscreen" allowfullscreen="true" loading="lazy"></iframe> -->
+          <div class="embed-placeholder">
+            <div class="embed-placeholder-icon">📊</div>
+            <h3>Master Power BI Dashboard</h3>
+            <p>We'll paste the published embed link into the <code>src</code> attribute of the iframe above. Master dashboard pages will render here once the report is published.</p>
+          </div>
+        </div>
+        <div class="embed-bar">
+          <span class="embed-label">
+            Master report · 5 pages · Bloomington · Winston-Salem · Peoria/Canton
+          </span>
+          <div class="embed-actions">
+            <span class="btn" id="btnFullscreen">⛶ Fullscreen</span>
+            <a class="btn btn-primary" href="[MASTER_POWERBI_EMBED_URL]" target="_blank" rel="noopener">
+              Open in new tab ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Cross-market scorecard matrix -->
+  <div class="section" id="scorecard">
+    <div class="section-label">Cross-Market Comparison</div>
+    <div class="card">
+      <div class="card-title">Market Scorecard Matrix</div>
+      <p class="card-sub">Color-coded signal: <span class="kpi-badge good">Green</span> favorable · <span class="kpi-badge warn">Amber</span> caution · <span class="kpi-badge bad">Red</span> risk</p>
+
+      <div class="scorecard-wrap">
+        <table class="scorecard">
+          <thead>
+            <tr>
+              <th>KPI</th>
+              <th>
+                <div class="sc-market-th">
+                  <span class="sc-market-dot" style="background:var(--bloom)"></span>
+                  <span class="sc-market-label">Bloomington</span>
+                  <span class="sc-market-sub">IN MSA</span>
+                </div>
+              </th>
+              <th>
+                <div class="sc-market-th">
+                  <span class="sc-market-dot" style="background:var(--ws)"></span>
+                  <span class="sc-market-label">Winston-Salem</span>
+                  <span class="sc-market-sub">NC MSA</span>
+                </div>
+              </th>
+              <th>
+                <div class="sc-market-th">
+                  <span class="sc-market-dot" style="background:var(--peoria)"></span>
+                  <span class="sc-market-label">Peoria / Canton</span>
+                  <span class="sc-market-sub">IL MSA</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Unemployment rate (12-mo avg)</td>
+              <td><div class="sc-cell"><span class="sc-val">3.56%</span><span class="sc-tag good">Tight</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">3.69%</span><span class="sc-tag good">Tight</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">4.48%</span><span class="sc-tag warn">Moderate</span></div></td>
+            </tr>
+            <tr>
+              <td>Production workforce depth</td>
+              <td><div class="sc-cell"><span class="sc-val">7,020</span><span class="sc-tag bad">Small</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">22,950</span><span class="sc-tag good">Large</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">14,810</span><span class="sc-tag warn">Medium</span></div></td>
+            </tr>
+            <tr>
+              <td>Production median wage ($/hr)</td>
+              <td><div class="sc-cell"><span class="sc-val">$21.42</span><span class="sc-tag warn">Below peers</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">$20.08</span><span class="sc-tag bad">Lowest</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">$23.57</span><span class="sc-tag good">Highest</span></div></td>
+            </tr>
+            <tr>
+              <td>Assembler LQ (4× national = extremely concentrated)</td>
+              <td><div class="sc-cell"><span class="sc-val">3.97</span><span class="sc-tag warn">Very high</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">1.50</span><span class="sc-tag good">Moderate</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">1.92</span><span class="sc-tag good">Strong</span></div></td>
+            </tr>
+            <tr>
+              <td>Active assembler posting count</td>
+              <td><div class="sc-cell"><span class="sc-val">27</span><span class="sc-tag warn">Moderate</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">12</span><span class="sc-tag good">Low</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">8</span><span class="sc-tag good">Low</span></div></td>
+            </tr>
+            <tr>
+              <td>Rent affordability gap (30% rule)</td>
+              <td><div class="sc-cell"><span class="sc-val">-$1.66</span><span class="sc-tag warn">Tight</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">-$0.82</span><span class="sc-tag warn">Borderline</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">+$8.84</span><span class="sc-tag good">Affordable</span></div></td>
+            </tr>
+            <tr>
+              <td>Mortgage affordability gap (30% rule)</td>
+              <td><div class="sc-cell"><span class="sc-val">-$8.31</span><span class="sc-tag bad">Critical</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">-$7.98</span><span class="sc-tag bad">Critical</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">+$0.80</span><span class="sc-tag good">Breakeven</span></div></td>
+            </tr>
+            <tr>
+              <td>Population trend (2015–2024)</td>
+              <td><div class="sc-cell"><span class="sc-val">+0.4%</span><span class="sc-tag warn">Flat</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">+7.4%</span><span class="sc-tag good">Growing</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">-11.5%</span><span class="sc-tag bad">Declining</span></div></td>
+            </tr>
+            <tr>
+              <td>Median age</td>
+              <td><div class="sc-cell"><span class="sc-val">32.6</span><span class="sc-tag good">Young</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">41.1</span><span class="sc-tag warn">Older</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">40.7</span><span class="sc-tag warn">Older</span></div></td>
+            </tr>
+            <tr>
+              <td>Geographic mobility rate (churn signal)</td>
+              <td><div class="sc-cell"><span class="sc-val">21.8%</span><span class="sc-tag bad">High churn</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">11.3%</span><span class="sc-tag good">Stable</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">9.7%</span><span class="sc-tag good">Stable</span></div></td>
+            </tr>
+            <tr>
+              <td>Competitor threat level</td>
+              <td><div class="sc-cell"><span class="sc-val">High</span><span class="sc-tag bad">Novo layoffs</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">Moderate</span><span class="sc-tag warn">BSC active</span></div></td>
+              <td><div class="sc-cell"><span class="sc-val">Low</span><span class="sc-tag good">Minimal</span></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Key findings -->
+  <div class="section" id="findings">
+    <div class="section-label">Key Findings</div>
+    <div class="findings-grid">
+
+      <div class="finding-card">
+        <div class="finding-icon" style="background:#fef2f2">🏠</div>
+        <h3>Homeownership is out of reach in two of three markets</h3>
+        <p>Bloomington and Winston-Salem production workers face mortgage gaps of <strong>-$8.31/hr & -$7.98/hr</strong> respectively, meaning the median production wage falls roughly $8/hr short of what's needed to afford a median home under the 30% rule. Canton is the only Cook market where a single production income clears the homeownership threshold.</p>
+      </div>
+
+      <div class="finding-card">
+        <div class="finding-icon" style="background:#fffbeb">⚠️</div>
+        <h3>Bloomington is tight, specialized, and about to get a talent injection</h3>
+        <p>An Assembler LQ of 3.97, nearly 4× the national concentration, means Cook already operates in an extremely specialized talent pool. Novo Nordisk's May 2026 layoffs will release ~400 skilled biomanufacturing workers into that same pool. This is a narrow, time-sensitive window.</p>
+      </div>
+
+      <div class="finding-card">
+        <div class="finding-icon" style="background:#e6f4e7">📈</div>
+        <h3>Winston-Salem is Cook's most scalable long-term market</h3>
+        <p>With 22,950 production workers, +7.4% population growth since 2015, and a stable mobility rate of 11.3%, Winston-Salem has the strongest structural fundamentals for sustained hiring. The competitive challenge here is differentiation, not access. Cook competes in a fragmented employer landscape rather than a scarce labor pool.</p>
+      </div>
+
+      <div class="finding-card">
+        <div class="finding-icon" style="background:#fdf0eb">📉</div>
+        <h3>Peoria/Canton's shrinking population is a long-horizon risk</h3>
+        <p>Canton's affordability advantage [ the only market with a positive mortgage gap ] is real and should be leveraged in retention messaging. But a population decline of 11.5% since 2015 puts a structural ceiling on the hiring pool over the next decade. Cook's Canton strategy should emphasize deep retention over volume recruiting.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Competitor intelligence -->
+  <div class="section" id="competition">
+    <div class="section-label">Competitive Intelligence</div>
+    <div class="card">
+      <div class="card-title">Competitor Presence by Market</div>
+      <p class="card-sub">Novo Nordisk, Boston Scientific, and Baxter: active headcount, posting activity, and event flags as of April 2026.</p>
+
+      <div class="callout info">
+        <p><strong>Priority action, Bloomington:</strong> Novo Nordisk's ~400 layoffs take effect May 2026. These are skilled pharmaceutical/biomanufacturing workers with production and QA backgrounds directly transferable to medical device manufacturing. Cook should activate sourcing outreach before the workforce is absorbed by other employers.</p>
+      </div>
+
+      <div class="divider"></div>
+      <div class="competitor-grid">
+        <div class="comp-card">
+          <div class="comp-header">
+            <div>
+              <div class="comp-name">Novo Nordisk</div>
+              <div class="comp-sector">Biopharmaceutical Manufacturing</div>
+            </div>
+            <span class="kpi-badge bad">⚡ Event</span>
+          </div>
+          <div class="comp-rows">
+            <div class="comp-row">
+              <span class="comp-market" style="color:var(--bloom)">● Bloomington</span>
+              <span class="comp-status" style="color:var(--bad-txt)">~400 layoffs, May 2026</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-market" style="color:var(--ws)">● Winston-Salem</span>
+              <span class="comp-status" style="color:var(--muted)">No presence</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-market" style="color:var(--peoria)">● Peoria / Canton</span>
+              <span class="comp-status" style="color:var(--muted)">No presence</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-header">
+            <div>
+              <div class="comp-name">Boston Scientific</div>
+              <div class="comp-sector">Medical Device</div>
+            </div>
+            <span class="kpi-badge warn">Active</span>
+          </div>
+          <div class="comp-rows">
+            <div class="comp-row">
+              <span class="comp-market" style="color:var(--bloom)">● Bloomington / Spencer</span>
+              <span class="comp-status" style="color:var(--warn-txt)">13 active IN postings</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-market" style="color:var(--ws)">● Winston-Salem</span>
+              <span class="comp-status" style="color:var(--warn-txt)">3 clinical/field roles</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-market" style="color:var(--peoria)">● Peoria / Canton</span>
+              <span class="comp-status" style="color:var(--muted)">Territory only, no facility</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-header">
+            <div>
+              <div class="comp-name">Baxter International</div>
+              <div class="comp-sector">Medical Device / Healthcare</div>
+            </div>
+            <span class="kpi-badge good">Low threat</span>
+          </div>
+          <div class="comp-rows">
+            <div class="comp-row">
+              <span class="comp-market" style="color:var(--bloom)">● Bloomington</span>
+              <span class="comp-status" style="color:var(--muted)">1 active role; Batesville major site</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-market" style="color:var(--ws)">● Winston-Salem</span>
+              <span class="comp-status" style="color:var(--muted)">No active presence</span>
+            </div>
+            <div class="comp-row">
+              <span class="comp-market" style="color:var(--peoria)">● Peoria / Canton</span>
+              <span class="comp-status" style="color:var(--muted)">1 active role; no facility</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: market deep-dives -->
+  <div class="section" id="deep-dives">
+    <div class="section-label">Market Deep-Dives</div>
+
+    <!-- Bloomington -->
+    <div class="market-section" data-market="bloom">
+      <div class="ms-header">
+        <div>
+          <div class="ms-accent-bar" style="background:var(--bloom)"></div>
+          <div style="font-family:'DM Serif Display',serif; font-size:19px;">Bloomington, IN: Labor Market Diagnosis</div>
+          <div style="font-size:12px; color:var(--muted); margin-top:2px;">Monroe + Owen Counties · Cook sites: Bloomington, Ellettsville, Spencer</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <span class="kpi-badge warn">Scarcity-driven</span>
+          <span class="kpi-badge bad">⚡ Novo layoff window</span>
+        </div>
+      </div>
+      <div class="ms-body">
+        <div class="ms-col">
+          <div class="ms-col-title">Labor Supply</div>
+          <div class="ms-stat"><div class="ms-stat-label">Unemployment (12-mo avg)</div><div class="ms-stat-val">3.56%</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Production workforce</div><div class="ms-stat-val">7,020</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Assembler LQ</div><div class="ms-stat-val">3.97</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Median age</div><div class="ms-stat-val">32.6</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Mobility rate</div><div class="ms-stat-val" style="color:var(--bad-txt)">21.8% ↑</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Population trend</div><div class="ms-stat-val">+0.4% (flat)</div></div>
+        </div>
+        <div class="ms-col">
+          <div class="ms-col-title">Wages &amp; Demand</div>
+          <div class="ms-stat"><div class="ms-stat-label">Production median wage</div><div class="ms-stat-val">$21.42/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Assembler median wage</div><div class="ms-stat-val">$17.69/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">QA/Inspection median</div><div class="ms-stat-val">$28.95/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Maintenance median</div><div class="ms-stat-val">$31.20/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Active assembler postings</div><div class="ms-stat-val">27</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Assembler posted range</div><div class="ms-stat-val">$20-28/hr</div></div>
+        </div>
+        <div class="ms-col">
+          <div class="ms-col-title">Housing &amp; Affordability</div>
+          <div class="ms-stat"><div class="ms-stat-label">Median home value (Bloomington)</div><div class="ms-stat-val">$321,400</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Median gross rent</div><div class="ms-stat-val">$1,200/mo</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Rent gap (30%)</div><div class="ms-stat-val" style="color:var(--warn-txt)">-$1.66/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Mortgage gap (30%)</div><div class="ms-stat-val" style="color:var(--bad-txt)">-$8.31/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Ellettsville rent gap</div><div class="ms-stat-val" style="color:var(--good-txt)">+$4.98/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Spencer rent gap</div><div class="ms-stat-val" style="color:var(--good-txt)">+$6.98/hr</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Winston-Salem -->
+    <div class="market-section" data-market="ws">
+      <div class="ms-header">
+        <div>
+          <div class="ms-accent-bar" style="background:var(--ws)"></div>
+          <div style="font-family:'DM Serif Display',serif; font-size:19px;">Winston-Salem, NC: Labor Market Diagnosis</div>
+          <div style="font-size:12px; color:var(--muted); margin-top:2px;">Davidson + Davie + Forsyth + Stokes + Yadkin Counties · Cook site: Winston-Salem</div>
+        </div>
+        <span class="kpi-badge good">Competition-driven · Growing pool</span>
+      </div>
+      <div class="ms-body">
+        <div class="ms-col">
+          <div class="ms-col-title">Labor Supply</div>
+          <div class="ms-stat"><div class="ms-stat-label">Unemployment (12-mo avg)</div><div class="ms-stat-val">3.69%</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Production workforce</div><div class="ms-stat-val">22,950</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Assembler LQ</div><div class="ms-stat-val">1.50</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Median age</div><div class="ms-stat-val">41.1</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Mobility rate</div><div class="ms-stat-val" style="color:var(--good-txt)">11.3% (stable)</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Population trend</div><div class="ms-stat-val" style="color:var(--good-txt)">+7.4% (growing)</div></div>
+        </div>
+        <div class="ms-col">
+          <div class="ms-col-title">Wages &amp; Demand</div>
+          <div class="ms-stat"><div class="ms-stat-label">Production median wage</div><div class="ms-stat-val">$20.08/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Assembler median wage</div><div class="ms-stat-val">$19.08/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">QA/Inspection median</div><div class="ms-stat-val">$21.33/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Maintenance median</div><div class="ms-stat-val">$28.80/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Active assembler postings</div><div class="ms-stat-val">12</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Assembler posted range</div><div class="ms-stat-val">$22-24/hr</div></div>
+        </div>
+        <div class="ms-col">
+          <div class="ms-col-title">Housing &amp; Affordability</div>
+          <div class="ms-stat"><div class="ms-stat-label">Median home value</div><div class="ms-stat-val">$233,800</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Median gross rent</div><div class="ms-stat-val">$1,087/mo</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Rent gap (30%)</div><div class="ms-stat-val" style="color:var(--warn-txt)">-$0.82/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Mortgage gap (30%)</div><div class="ms-stat-val" style="color:var(--bad-txt)">-$7.98/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Rent threshold (30%)</div><div class="ms-stat-val">$20.90/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Mortgage threshold (30%)</div><div class="ms-stat-val">$28.06/hr</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Peoria/Canton -->
+    <div class="market-section" data-market="peoria">
+      <div class="ms-header">
+        <div>
+          <div class="ms-accent-bar" style="background:var(--peoria)"></div>
+          <div style="font-family:'DM Serif Display',serif; font-size:19px;">Peoria / Canton, IL: Labor Market Diagnosis</div>
+          <div style="font-size:12px; color:var(--muted); margin-top:2px;">Peoria MSA (incl. Fulton Co.) · Cook site: Canton</div>
+        </div>
+        <span class="kpi-badge warn">Affordability advantage · Declining pool</span>
+      </div>
+      <div class="ms-body">
+        <div class="ms-col">
+          <div class="ms-col-title">Labor Supply</div>
+          <div class="ms-stat"><div class="ms-stat-label">Unemployment (12-mo avg)</div><div class="ms-stat-val">4.48%</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Production workforce</div><div class="ms-stat-val">14,810</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Assembler LQ</div><div class="ms-stat-val">1.92</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Median age</div><div class="ms-stat-val">40.7</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Mobility rate</div><div class="ms-stat-val" style="color:var(--good-txt)">9.7% (very stable)</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Population trend</div><div class="ms-stat-val" style="color:var(--bad-txt)">-11.5% (declining)</div></div>
+        </div>
+        <div class="ms-col">
+          <div class="ms-col-title">Wages &amp; Demand</div>
+          <div class="ms-stat"><div class="ms-stat-label">Production median wage</div><div class="ms-stat-val">$23.57/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Assembler median wage</div><div class="ms-stat-val">$22.43/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">QA/Inspection median</div><div class="ms-stat-val">$26.20/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Machinist median</div><div class="ms-stat-val">$24.24/hr</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Active assembler postings</div><div class="ms-stat-val">8</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Assembler posted range</div><div class="ms-stat-val">$20-42/hr</div></div>
+        </div>
+        <div class="ms-col">
+          <div class="ms-col-title">Housing &amp; Affordability</div>
+          <div class="ms-stat"><div class="ms-stat-label">Median home value (Canton)</div><div class="ms-stat-val">$107,100</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Median gross rent</div><div class="ms-stat-val">$766/mo</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Rent gap (30%)</div><div class="ms-stat-val" style="color:var(--good-txt)">+$8.84/hr ✓</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Mortgage gap (30%)</div><div class="ms-stat-val" style="color:var(--good-txt)">+$0.80/hr ✓</div></div>
+          <div class="ms-stat"><div class="ms-stat-label">Only Cook market where a single production income clears homeownership</div><div class="ms-stat-val" style="font-size:12px; color:var(--good-txt); font-weight:600;">← Key retention message</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: recommendations -->
+  <div class="section" id="recs">
+    <div class="section-label">Recommendations</div>
+    <div class="recs-grid">
+
+      <div class="rec-card">
+        <div class="rec-number" style="color:var(--bloom)">01</div>
+        <span class="rec-market-tag" style="color:var(--bloom); background:var(--bloom-lt);">Bloomington · Immediate</span>
+        <h3>Activate Novo Nordisk recruitment pipeline</h3>
+        <p>~400 skilled biomanufacturing workers enter the Bloomington labor market in May 2026. Cook should prepare targeted outreach before other local employers act. QA, production, and maintenance profiles are directly transferable to medical device manufacturing.</p>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-number" style="color:var(--bloom)">02</div>
+        <span class="rec-market-tag" style="color:var(--bloom); background:var(--bloom-lt);">Bloomington · Retention</span>
+        <h3>Address the housing affordability gap with targeted assistance</h3>
+        <p>Bloomington production workers face an -$8.31/hr mortgage shortfall. Ellettsville and Spencer, where Cook also operates, have materially better affordability profiles. Informs where retention investment is most effective.</p>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-number" style="color:var(--ws)">03</div>
+        <span class="rec-market-tag" style="color:var(--ws); background:var(--ws-lt);">Winston-Salem · Differentiation</span>
+        <h3>Compete on offer quality, not wage escalation alone</h3>
+        <p>Winston-Salem is a fragmented, competition-driven market. Cook's edge will come from hiring speed, employer branding, and visible career pathways. Formalize assembler → QA → supervisor progression and make it a recruiting message.</p>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-number" style="color:var(--ws)">04</div>
+        <span class="rec-market-tag" style="color:var(--ws); background:var(--ws-lt);">Winston-Salem · Scale</span>
+        <h3>Scale recruiting channels, the pool supports it</h3>
+        <p>With 22,950 production workers and a growing population, Winston-Salem supports broader sourcing strategies than either Bloomington or Peoria. Invest in pipeline volume, not just individual hires. This is Cook's most sustainable long-term hiring market.</p>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-number" style="color:var(--peoria)">05</div>
+        <span class="rec-market-tag" style="color:var(--peoria); background:var(--peoria-lt);">Canton · Retention</span>
+        <h3>Lead with Canton's affordability advantage in retention messaging</h3>
+        <p>Canton is the only Cook location where production median wage clears the homeownership threshold. This is a differentiating retention message, "work here, own a home here", that no Bloomington or Winston-Salem employer can match at the same wage level.</p>
+      </div>
+
+      <div class="rec-card">
+        <div class="rec-number" style="color:var(--peoria)">06</div>
+        <span class="rec-market-tag" style="color:var(--peoria); background:var(--peoria-lt);">Canton · Long-horizon</span>
+        <h3>Prioritize retention depth over volume recruiting in Canton</h3>
+        <p>An 11.5% population decline since 2015 puts a structural ceiling on Peoria/Canton's future labor supply. Cook's Canton strategy should maximize tenure and internal development rather than plan for high-volume replacement hiring. The pool will not replenish easily.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: links to individual market reports -->
+  <div class="section" id="market-reports">
+    <div class="section-label">Individual Market Reports</div>
+    <div class="market-links">
+      <a class="mlink-card" href="[BLOOMINGTON_REPORT_URL]" target="_blank">
+        <div class="mlink-flag" style="background:var(--bloom-lt); color:var(--bloom)">📍</div>
+        <div class="mlink-market" style="color:var(--bloom)">Bloomington · Ellettsville · Spencer</div>
+        <div class="mlink-title">Bloomington, IN</div>
+        <div class="mlink-desc">Full diagnosis: labor supply, wages, housing, postings, and competitive landscape for the Bloomington MSA.</div>
+        <div class="mlink-arrow">View full report →</div>
+      </a>
+      <a class="mlink-card" href="[WINSTON_REPORT_URL]" target="_blank">
+        <div class="mlink-flag" style="background:var(--ws-lt); color:var(--ws)">📍</div>
+        <div class="mlink-market" style="color:var(--ws)">Winston-Salem</div>
+        <div class="mlink-title">Winston-Salem, NC</div>
+        <div class="mlink-desc">Full diagnosis: labor supply, wages, housing, postings, and competitive landscape for the Winston-Salem MSA.</div>
+        <div class="mlink-arrow">View full report →</div>
+      </a>
+      <a class="mlink-card" href="[CANTON_REPORT_URL]" target="_blank">
+        <div class="mlink-flag" style="background:var(--peoria-lt); color:var(--peoria)">📍</div>
+        <div class="mlink-market" style="color:var(--peoria)">Canton (Peoria MSA)</div>
+        <div class="mlink-title">Canton, IL</div>
+        <div class="mlink-desc">Full diagnosis: labor supply, wages, housing, postings, and competitive landscape for the Peoria MSA.</div>
+        <div class="mlink-arrow">View full report →</div>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+</main>
+
+<!-- ── FOOTER ──────────────────────────────────────────────────────────────── -->
+<footer id="sources">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <h4>Data Sources</h4>
+        <ol>
+          <li><a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">BLS OEWS: Occupational Employment and Wage Statistics, May 2024</a></li>
+          <li><a href="https://fred.stlouisfed.org" target="_blank" rel="noopener">FRED / BLS: MSA unemployment series, 2015–Sep 2025</a></li>
+          <li><a href="https://www.census.gov/programs-surveys/acs" target="_blank" rel="noopener">U.S. Census Bureau: ACS 2024 1-Year Estimates (demographics)</a></li>
+          <li><a href="https://www.census.gov/quickfacts/" target="_blank" rel="noopener">Census QuickFacts: ACS 2020–2024 housing estimates</a></li>
+          <li>Job postings snapshot: manual multi-board collection (Indeed, LinkedIn, ZipRecruiter, Glassdoor), Feb-Apr 2026, 20-mile radius, 30-day window</li>
+          <li><a href="https://xtalks.com/layoffs-hit-novo-nordisks-ex-catalent-site-despite-turnaround-efforts-4732/" target="_blank" rel="noopener">Xtalks / BioSpace: Novo Nordisk Bloomington layoff coverage, Apr 2026</a></li>
+        </ol>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul style="list-style:none; padding:0;">
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="#scorecard">Scorecard Matrix</a></li>
+          <li><a href="#findings">Key Findings</a></li>
+          <li><a href="#competition">Competitor Intelligence</a></li>
+          <li><a href="#deep-dives">Market Deep-Dives</a></li>
+          <li><a href="#recs">Recommendations</a></li>
+          <li><a href="#market-reports">Individual Reports</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Document Info</h4>
+        <ul style="list-style:none; padding:0;">
+          <li>Version: Alpha 0.2</li>
+          <li>Markets: Bloomington IN, Winston-Salem NC, Peoria/Canton IL</li>
+          <li>Prepared for: Stephanie L.</li>
+          <li>April 2026</li>
+          <li style="margin-top:10px; font-size:11px; color:rgba(255,255,255,.35);">Power BI embed: replace placeholder src with published report URL.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Cook Medical Workforce Intelligence · Multi-Market Analysis · April 2026</span>
+      <span>Data as of collection dates listed above. All wages in nominal USD.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ── SCRIPTS ─────────────────────────────────────────────────────────────── -->
+<script>
+(function () {
+  /* ── Market filter tabs ─────────────────────────────────────────────────── */
+  const btns = document.querySelectorAll('.mnav-btn');
+  const mcards = document.querySelectorAll('.mcard[data-market]');
+  const msections = document.querySelectorAll('.market-section[data-market]');
+
+  const marketMap = {
+    bloom:  ['bloom'],
+    ws:     ['ws'],
+    peoria: ['peoria'],
+    all:    ['bloom', 'ws', 'peoria'],
+  };
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', function () {
+      const filter = this.dataset.filter;
+
+      // Update active state
+      btns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      const allowed = marketMap[filter];
+
+      // Filter snapshot cards
+      mcards.forEach(card => {
+        const m = card.dataset.market;
+        if (allowed.includes(m)) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Filter deep-dive sections
+      msections.forEach(sec => {
+        const m = sec.dataset.market;
+        if (allowed.includes(m)) {
+          sec.classList.remove('hidden');
+        } else {
+          sec.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  /* ── Fullscreen embed button ────────────────────────────────────────────── */
+  const btnFS = document.getElementById('btnFullscreen');
+  if (btnFS) {
+    btnFS.addEventListener('click', function () {
+      const frame = document.querySelector('#dashboard iframe');
+      if (!frame) return;
+      const req = frame.requestFullscreen || frame.webkitRequestFullscreen || frame.msRequestFullscreen;
+      if (req) req.call(frame);
+    });
+  }
+
+  /* ── Scroll-triggered fade-in ───────────────────────────────────────────── */
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.animationDelay = (parseFloat(e.target.dataset.delay || 0)) + 's';
+          e.target.classList.add('fade-in');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.finding-card, .rec-card, .comp-card, .mlink-card').forEach((el, i) => {
+      el.style.opacity = '0';
+      el.dataset.delay = (i % 4) * 0.07;
+      obs.observe(el);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
